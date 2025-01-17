@@ -27,13 +27,13 @@ class PriorityViewSet(ModelViewSet):
     serializer_class = PrioritySerializer
 
 
-class TaskViewSet(ModelViewSet): 
-    queryset = Task.objects.all() 
-    serializer_class = TaskSerializer 
-    filter_backends = [DjangoFilterBackend, SearchFilter] 
-    filterset_fields = ['project', 'priority', 'category'] 
+class TaskViewSet(ModelViewSet):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_fields = ['project', 'priority', 'category']
     search_fields = ['title', 'description']
 
     def perform_create(self, serializer): 
         logger.info("Creating a new task") 
-        serializer.save()
+        serializer.save()   
