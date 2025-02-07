@@ -21,3 +21,6 @@ class CV(models.Model):
     email = models.EmailField() 
 
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True) 
+    def __str__(self):
+        return self.name
+    
