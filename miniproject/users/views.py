@@ -1,6 +1,9 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import redirect, render 
+from .forms import RegistrationForm
+from .models import User
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -31,3 +34,19 @@ def logout_view(request):
     response.delete_cookie("access_token")
     response.delete_cookie("refresh_token")
     return response
+
+def user_registration(request): 
+    if request.method == "POST": 
+        form = RegistrationForm(request.POST) 
+        if form.is_valid(): 
+            name = form.cleaned_data['name'] 
+            email = form.cleaned_data['email'] 
+            password = form.cleaned_data['password']
+            user = User.objects.create_user(username=name, email=email, password=password)
+            return redirect('/users/login')
+    else: 
+        form = RegistrationForm() 
+    return render(request, 'users/contact.html', {'form': form})
+
+def user_profile(request):
+    pass
