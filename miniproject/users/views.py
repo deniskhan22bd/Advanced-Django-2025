@@ -1,9 +1,11 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework import status, permissions
 from django.shortcuts import redirect, render 
 from .forms import RegistrationForm
 from .models import User
+from .serializers import UserSerializer
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -39,14 +41,25 @@ def user_registration(request):
     if request.method == "POST": 
         form = RegistrationForm(request.POST) 
         if form.is_valid(): 
-            name = form.cleaned_data['name'] 
+            username = form.cleaned_data['username'] 
             email = form.cleaned_data['email'] 
             password = form.cleaned_data['password']
-            user = User.objects.create_user(username=name, email=email, password=password)
+            user = User.objects.create_user(username=username, email=email, password=password)
             return redirect('/users/login')
     else: 
         form = RegistrationForm() 
     return render(request, 'users/contact.html', {'form': form})
 
-def user_profile(request):
-    pass
+class UserProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request):
+        user = request.user
+        return render(request, 'users/profile.html', {'user': user})
+    
+    def post(self, request):
+        profile_picture = request.FILES.get('profile_picture')
+        if profile_picture:
+            user = request.user
+            user.profile_picture = profile_picture
+            user.save()
+        return redirect('user_profile')

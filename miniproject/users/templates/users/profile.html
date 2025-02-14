@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Profile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .profile-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .profile-picture {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+    }
+    .profile-info {
+      margin-top: 20px;
+    }
+    .profile-info div {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <h1>User Profile</h1>
+    
+    <div class="profile-info">
+      <div><strong>ID:</strong> {{ user.id }}</div>
+      <div><strong>Username:</strong> {{ user.username }}</div>
+      <div><strong>Email:</strong> {{ user.email }}</div>
+      <div><strong>Role:</strong> {{ user.role }}</div>
+      
+      <div>
+        <strong>Profile Picture:</strong><br>
+        {% if user.profile_picture %}
+          <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture">
+        {% else %}
+          <p>No profile picture available.</p>
+        {% endif %}
+      </div>
+
+      <!-- Upload picture form -->
+      <div class="upload-form">
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          <input type="file" name="profile_picture" accept="image/*">
+          <button type="submit">Upload Picture</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
