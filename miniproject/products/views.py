@@ -3,8 +3,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from .models import Product, Category, Tag
 from .serializers import ProductSerializer, CategorySerializer, TagSerializer
-from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView
+from rest_framework.views import APIView
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
@@ -20,9 +19,12 @@ class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
-
-class ProductListView(ListView):
+    def perform_create(self, serializer):
+        serializer.save(seller=self.request.user)
+        
+class ProductListView(APIView):
     permission_classes = [IsAuthenticated]
-    model = Product
-    template_name = "products/product_list.html"
-    context_object_name = "products"
+    def get(self, request):
+        products = Product.objects.all()
+        return render(request, 'products/product_list.html', {'products': products})
+

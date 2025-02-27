@@ -1,3 +1,4 @@
+<!-- products/templates/products/product_list.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,7 +26,15 @@
                 <p>{{ product.description }}</p>
                 <p><strong>Price:</strong> ${{ product.price }}</p>
                 <p><strong>Stock:</strong> {{ product.stock }}</p>
+                <p><strong>Seller:</strong> {{ product.seller.username }}</p>
+                <!-- Buy It button -->
+                <form action="{% url 'buy_product' product.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Buy It</button>
+                </form>
             </div>
+        {% empty %}
+            <p>No products available at this time.</p>
         {% endfor %}
     </div>
 </body>

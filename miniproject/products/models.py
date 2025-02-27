@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -26,6 +27,8 @@ class Product(models.Model):
     image = models.ImageField(upload_to='product_images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products_for_sale')
+
 
     def __str__(self):
         return self.name

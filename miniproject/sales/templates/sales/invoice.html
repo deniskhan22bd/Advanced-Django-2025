@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 8px 12px; border: 1px solid #ccc; text-align: left; }
+        th { background-color: #f4f4f4; }
+        tfoot { font-weight: bold; }
+        .download-btn { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Invoice</h1>
+    <div class="download-btn">
+        <a href="{% url 'invoice_download' %}" style="padding: 10px 20px; background: #28a745; color: #fff; text-decoration: none; border-radius: 4px;">
+            Download PDF
+        </a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Buyer</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.id }}</td>
+                <td>{{ transaction.buyer.username }}</td>
+                <td>{{ transaction.product.name }}</td>
+                <td>${{ transaction.product.price }}</td>
+                <td>{{ transaction.status }}</td>
+                <td>{{ transaction.created_at }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No transactions found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">Total Price</td>
+                <td colspan="3">${{ total_price }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html>

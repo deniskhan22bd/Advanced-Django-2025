@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Seller Notifications</title>
+</head>
+<body>
+    <h1>Pending Purchase Requests</h1>
+    {% if transactions %}
+        <ul>
+            {% for transaction in transactions %}
+                <li>
+                    Buyer: {{ transaction.buyer.username }} wants to buy 
+                    "{{ transaction.product.name }}".
+                    <form action="{% url 'approve_transaction' transaction.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">Approve</button>
+                    </form>
+                    <form action="{% url 'deny_transaction' transaction.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">Deny</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No pending requests.</p>
+    {% endif %}
+</body>
+</html>

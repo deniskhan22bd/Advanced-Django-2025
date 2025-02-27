@@ -5,7 +5,7 @@ from rest_framework import status, permissions
 from django.shortcuts import redirect, render 
 from .forms import RegistrationForm
 from .models import User
-from .serializers import UserSerializer
+from rest_framework.decorators import api_view, renderer_classes
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -31,11 +31,13 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             return res
         return response
 
+@api_view(('GET',))
 def logout_view(request):
     response = Response({"message": "Logged out successfully"})
     response.delete_cookie("access_token")
     response.delete_cookie("refresh_token")
     return response
+
 
 def user_registration(request): 
     if request.method == "POST": 
@@ -45,7 +47,7 @@ def user_registration(request):
             email = form.cleaned_data['email'] 
             password = form.cleaned_data['password']
             user = User.objects.create_user(username=username, email=email, password=password)
-            return redirect('/users/login')
+            return redirect('/login')
     else: 
         form = RegistrationForm() 
     return render(request, 'users/contact.html', {'form': form})
@@ -62,4 +64,4 @@ class UserProfileView(APIView):
             user = request.user
             user.profile_picture = profile_picture
             user.save()
-        return redirect('user_profile')
+        return redirect('profile')

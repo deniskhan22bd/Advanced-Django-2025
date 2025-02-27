@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Bucket</title>
+</head>
+<body>
+    <h1>My Bucket</h1>
+    {% if transactions %}
+        <ul>
+            {% for transaction in transactions %}
+                <li>
+                    Product: {{ transaction.product.name }} |
+                    Seller: {{ transaction.product.seller.username }} |
+                    Status: {{ transaction.status }} | 
+                    Price: {{transaction.product.price}} | 
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No transactions found.</p>
+    {% endif %}
+</body>
+</html>
