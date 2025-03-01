@@ -9,7 +9,7 @@ from products.models import Category, Tag, Product
 
 def create_superuser():
     if not User.objects.filter(username='denis').exists():
-        User.objects.create_superuser('denis', 'denis@example.com', 'denis')
+        User.objects.create_superuser('denis', 'denis@example.com', 'denis', role='admin')
         print("Superuser created.")
     else:
         print("Superuser already exists.")
@@ -74,4 +74,4 @@ def create_products():
 if __name__ == '__main__':
     create_superuser()
     create_categories_and_tags()
-    create_products
+    create_products()

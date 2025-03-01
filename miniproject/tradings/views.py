@@ -1,60 +1,87 @@
-# tradings/views.py
-from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView
+from django.shortcuts import get_object_or_404
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from products.models import Product
 from .models import Transaction
+from rest_framework.renderers import TemplateHTMLRenderer
+from django.http import HttpResponseRedirect
 
-def buy_product(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    if product.stock <= 0:
-        return redirect('product_list')
-    Transaction.objects.create(product=product, buyer=request.user, status='pending')
-    product.stock -= 1
-    product.save()
-    if product.stock == 0:
-        product.delete()
-    
-    return redirect('buyer_bucket')
+class BuyProductView(APIView):
+    permission_classes = [IsAuthenticated]
 
-class BuyerBucketView(ListView):
-    model = Transaction
+    def post(self, request, product_id, format=None):
+        product = get_object_or_404(Product, id=product_id)
+        if product.stock <= 0:
+            return Response(
+                {"detail": "Product out of stock."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        Transaction.objects.create(
+            product=product,
+            buyer=request.user,
+            status='pending'
+        )
+        
+        product.stock -= 1
+        product.save()
+        
+        if product.stock == 0:
+            product.delete()
+        
+        # If the request accepts HTML (e.g., a browser request), redirect.
+        return HttpResponseRedirect(redirect_to="/products/")
+
+
+
+# API endpoint to list transactions for a buyer
+class BuyerBucketView(APIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [TemplateHTMLRenderer]
     template_name = 'tradings/buyer_bucket.html'
-    context_object_name = 'transactions'
+    
+    def get(self, request, *args, **kwargs):
+        transactions = Transaction.objects.filter(buyer=request.user)
+        return Response({'transactions': transactions})
 
-    def get_queryset(self):
-        return Transaction.objects.filter(buyer=self.request.user)
-
-# Seller notifications: list pending transactions for products where the seller is the current user
-class SellerNotificationsView(ListView):
-    model = Transaction
+class SellerNotificationsView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    renderer_classes = [TemplateHTMLRenderer]
     template_name = 'tradings/seller_notifications.html'
-    context_object_name = 'transactions'
 
-    def get_queryset(self):
-        return Transaction.objects.filter(product__seller=self.request.user, status='pending')
+    def get(self, request, *args, **kwargs):
+        transactions = Transaction.objects.filter(product__seller=self.request.user, status='pending')
+        return Response({'transactions': transactions})
 
 
-def approve_transaction(request, transaction_id):
-    """
-    Seller approves a transaction.
-    """
-    transaction = get_object_or_404(Transaction, id=transaction_id)
-    # Ensure only the seller of the product can approve
-    if transaction.product.seller != request.user:
-        return HttpResponse("Unauthorized", status=403)
-    transaction.status = 'accepted'
-    transaction.save()
-    return redirect('seller_notifications')
+# API endpoint for a seller to approve a transaction
+class ApproveTransactionView(APIView):
+    permission_classes = [IsAuthenticated]
 
-def deny_transaction(request, transaction_id):
-    """
-    Seller denies a transaction.
-    """
-    transaction = get_object_or_404(Transaction, id=transaction_id)
-    if transaction.product.seller != request.user:
-        return HttpResponse("Unauthorized", status=403)
-    transaction.status = 'rejected'
-    transaction.save()
-    return redirect('seller_notifications')
+    def post(self, request, transaction_id, format=None):
+        transaction = get_object_or_404(Transaction, id=transaction_id)
+        # Ensure that only the seller can approve the transaction
+        if transaction.product.seller != request.user:
+            return Response({"detail": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
+        
+        transaction.status = 'accepted'
+        transaction.save()
+        return HttpResponseRedirect(redirect_to="/seller/notifications/")
+
+
+
+# API endpoint for a seller to deny a transaction
+class DenyTransactionView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, transaction_id, format=None):
+        transaction = get_object_or_404(Transaction, id=transaction_id)
+        if transaction.product.seller != request.user:
+            return Response({"detail": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
+        
+        transaction.status = 'rejected'
+        transaction.save()
+        return HttpResponseRedirect(redirect_to="/seller/notifications/")
