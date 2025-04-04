@@ -27,25 +27,34 @@
         <h2 class="mb-0">Parsed Resume Details</h2>
       </div>
       <div class="card-body">
-        <p><strong>ID:</strong> {{ resume.id }}</p>
-        <p><strong>Uploaded at:</strong> {{ resume.uploaded_at }}</p>
-        <hr>
         <h4>Personal Information</h4>
         <p><strong>Name:</strong> {{ resume.parsed_data.name }}</p>
         <p><strong>Email:</strong> {{ resume.parsed_data.email }}</p>
         <hr>
         <h4>Skills</h4>
-        <ul class="list-unstyled">
-          {% for skill in resume.parsed_data.skills %}
-            <li>{{ skill }}</li>
-          {% endfor %}
-        </ul>
+        <div class="row">
+          <div class="col">
+            <ul class="list-unstyled">
+              {% for skill in resume.parsed_data.skills %}
+                <li>{{ skill }}</li>
+                {% if forloop.counter|divisibleby:7 and not forloop.last %}
+                  </ul>
+                </div>
+                <div class="col">
+                  <ul class="list-unstyled">
+                {% endif %}
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        
         <hr>
         <h4>Education</h4>
-        <p><strong>University:</strong> {{ resume.parsed_data.education.university }}</p>
-        <p><strong>Degree:</strong> {{ resume.parsed_data.education.degree }}</p>
-        <p><strong>Duration:</strong> {{ resume.parsed_data.education.duration }}</p>
-        <div class="mt-4">
+        <ul class="list-unstyled">
+          {% for edu in resume.parsed_data.education %}
+            <li>{{ edu.place_of_learning }}, {{ edu.degree }}</li>
+          {% endfor %}
+        </ul>        
           <a href="{% url 'upload_resume' %}" class="btn btn-primary">Upload Another Resume</a>
         </div>
       </div>

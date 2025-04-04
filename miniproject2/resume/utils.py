@@ -3,6 +3,7 @@ import docx
 from pdfminer.high_level import extract_text
 import re
 import json
+from mistralai import Mistral
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -31,13 +32,11 @@ def parse_resume(file_path):
         text = extract_text_from_docx(file_path)
     else:
         text = ""
-    from mistralai import Mistral
-
     api_key = os.getenv('AI_API_KEY')
     model = "mistral-large-latest"
 
     client = Mistral(api_key=api_key)
-    text = "extracts exactly name, email, skills, education(university) in json format" + text
+    text = "I have a resume provided as text (extracted from either a PDF or DOCX file). Your task is to analyze the text and extract the following information:Name: The candidates full name.Email: The candidates email address.Skills: A list of technical and/or soft skills mentioned.Education: Details about the candidates educational background if available. Please output the extracted information in JSON format with the keys name, email, skills, and education(place_of_learning, degree, in array of objects). If any of the details are not found, leave the corresponding value empty or null" + text
     chat_response = client.chat.complete(
         model= model,
         messages = [
@@ -48,7 +47,7 @@ def parse_resume(file_path):
         ]
     )
     data = chat_response.choices[0].message.content.strip()
-
+    print(data)
     match = re.search(r"```json\s*(\{.*\})\s*```", data, re.DOTALL)
     if match:
         json_str = match.group(1)
