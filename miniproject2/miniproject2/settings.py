@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     
     'users',
     'resume',
+    'jobs',
     
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     'allauth',
@@ -56,6 +58,7 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'users.User'
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -65,6 +68,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
 
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:4200'
+]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200",
 ]
 
 ROOT_URLCONF = 'miniproject2.urls'
@@ -87,6 +97,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'miniproject2.wsgi.application'
 
+# settings.py
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:4200',
+]
+CORS_ALLOW_CREDENTIALS = True
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases

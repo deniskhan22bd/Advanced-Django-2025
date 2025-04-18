@@ -1,0 +1,34 @@
+<!-- resume-upload.component.html -->
+<div class="upload-container">
+    <h1>Upload Your Resume</h1>
+    
+    <form (ngSubmit)="onSubmit()" #uploadForm="ngForm">
+      <div class="form-group">
+        <label for="resumeFile">Select resume (PDF or Word):</label>
+        <input 
+          type="file" 
+          id="resumeFile"
+          class="form-control-file"
+          (change)="onFileSelected($event)"
+          accept=".pdf,.doc,.docx"
+          required
+        >
+      </div>
+  
+      <div *ngIf="uploadError" class="alert alert-danger">
+        {{ uploadError }}
+      </div>
+  
+      <button 
+        type="submit" 
+        class="btn btn-primary"
+        [disabled]="!selectedFile || isUploading"
+      >
+        <span *ngIf="!isUploading">Upload Resume</span>
+        <span *ngIf="isUploading">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Uploading...
+        </span>
+      </button>
+    </form>
+  </div>

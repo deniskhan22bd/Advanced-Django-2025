@@ -1,0 +1,45 @@
+<div class="container my-5" *ngIf="resume?.parsed_data">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white">
+        <h2 class="mb-0">Parsed Resume Details</h2>
+      </div>
+      <div class="card-body">
+        <h4>Personal Information</h4>
+        <p><strong>Name:</strong> {{ resume.parsed_data.name }}</p>
+        <p><strong>Email:</strong> {{ resume.parsed_data.email }}</p>
+        <hr>
+  
+        <h4>Experience</h4>
+        <ul class="list-unstyled">
+          <li *ngFor="let exp of resume.parsed_data.experience">
+            {{ exp.company }}, {{ exp.position }}, {{ exp.duration }}
+          </li>
+        </ul>
+  
+        <h4>Skills</h4>
+        <div class="row">
+          <div class="col" *ngFor="let chunk of chunkArray(resume.parsed_data.skills, 7)">
+            <ul class="list-unstyled">
+              <li *ngFor="let skill of chunk">{{ skill }}</li>
+            </ul>
+          </div>
+        </div>
+  
+        <hr>
+        <h4>Education</h4>
+        <ul class="list-unstyled">
+          <li *ngFor="let edu of resume.parsed_data.education">
+            {{ edu.place_of_learning }}, {{ edu.degree }}
+          </li>
+        </ul>
+  
+        <h4>Feedback and Suggestions</h4>
+        <p>{{ resume.parsed_data.feedback }}</p>
+        <p>{{ resume.parsed_data.suggestions }}</p>
+  
+        <button (click)="redirectToUpload()" class="btn btn-primary">Upload Another Resume</button>
+
+      </div>
+    </div>
+  </div>
+  

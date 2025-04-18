@@ -1,0 +1,14 @@
+<ul>
+    <li *ngFor="let job of jobs">
+      <h3>{{ job.title }} at {{ job.company }}</h3>
+      <p><strong>ID:</strong> {{ job.id }}</p>
+      <p><strong>Description:</strong> {{ job.description }}</p>
+      <p><strong>Skills Required:</strong> {{ job.required_skills.join(', ') }}</p>
+      <p><strong>Experience:</strong> {{ job.required_experience }} years</p>
+      <p><strong>Location:</strong> {{ job.location }} 
+         <span *ngIf="job.is_remote">(Remote)</span>
+      </p>
+      <p><small>Posted on: {{ job.created_at | date:'medium' }}</small></p>
+    </li>
+  </ul>
+  

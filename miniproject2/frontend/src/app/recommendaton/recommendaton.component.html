@@ -1,0 +1,32 @@
+<div class="container">
+    <h2>Job Recommendations</h2>
+    <div *ngIf="error" class="error">
+      {{ error }}
+    </div>
+  
+    <div *ngIf="!loading && !error">
+      <div *ngIf="recommendations.length === 0" class="no-results">
+        No job recommendations found
+      </div>
+  
+      <div class="job-list">
+        <div *ngFor="let rec of recommendations" class="job-card">
+          <div class="header">
+            <h3>{{ rec.job.title }}</h3>
+            <div class="score">
+              <div class="score-bar" [style.width.%]="rec.score"></div>
+              <span>{{ rec.score }}% Match</span>
+            </div>
+          </div>
+          
+          <div class="details">
+            <p><strong>Company:</strong> {{ rec.job.company }}</p>
+            <p><strong>Location:</strong> {{ rec.job.location }}</p>
+            <p><strong>Remote:</strong> {{ rec.job.is_remote ? 'Yes' : 'No' }}</p>
+            <p><strong>Required Skills:</strong> {{ rec.job.required_skills }}</p>
+            <p><strong>Experience:</strong> {{ rec.job.required_experience }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

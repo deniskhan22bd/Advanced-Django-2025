@@ -29,9 +29,8 @@ urlpatterns = [
         name="account_confirm_email",
     ),
     path('accounts/', include('allauth.urls')),
-    
-    
-    path('resume/', include('resume.urls'))
+    path('resume/', include('resume.urls')),
+    path('jobs/', include('jobs.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

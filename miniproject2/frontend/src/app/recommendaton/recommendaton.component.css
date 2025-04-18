@@ -1,0 +1,74 @@
+/* job-recommendations.component.css */
+.container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .loading {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+  }
+  
+  .error {
+    color: #dc3545;
+    padding: 1rem;
+    background-color: #f8d7da;
+    border-radius: 4px;
+    margin: 1rem 0;
+  }
+  
+  .job-list {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .job-card {
+    padding: 1.5rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .score {
+    position: relative;
+    width: 150px;
+    height: 30px;
+    background: #f0f0f0;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  
+  .score-bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #4CAF50;
+    transition: width 0.3s ease;
+  }
+  
+  .score span {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-weight: bold;
+    z-index: 1;
+  }
+  
+  .details p {
+    margin: 0.5rem 0;
+    color: #555;
+  }

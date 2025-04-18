@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 class Resume(models.Model):
     file = models.FileField(upload_to='uploads/')

@@ -10,6 +10,8 @@ from dj_rest_auth.registration.views import RegisterView
 
 class CustomRegisterView(RegisterView):
     serializer_class = UserRegistrationSerializer
+    authentication_classes = []
+    template_name = 'users/register.html'
 
 # Create your views here.
 class CustomTokenObtainPairView(TokenObtainPairView):

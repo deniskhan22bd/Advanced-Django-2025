@@ -1,3 +1,26 @@
-<!-- user-profile.html -->
-<h1>Use profile</h1>
-<p>This is the user profile page</p>
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+    <div>
+        <label for="username">Username</label>
+        <input id="username" formControlName="username">
+        <div *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required')">
+            Username is required.
+        </div>
+        <div *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.hasError('minlength')">
+            Username must be at least 3 characters.
+        </div>
+    </div>
+
+    <div>
+        <label for="password">Password</label>
+        <input id="password" type="password" formControlName="password">
+        <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')">
+            Password is required.
+        </div>
+        <div *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('minlength')">
+            Password must be at least 6 characters.
+        </div>
+    </div>
+
+    <button type="submit" [disabled]="!loginForm.valid">Login</button>
+</form>

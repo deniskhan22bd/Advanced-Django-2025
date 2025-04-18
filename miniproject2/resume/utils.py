@@ -36,19 +36,30 @@ def parse_resume(file_path):
     model = "mistral-large-latest"
 
     client = Mistral(api_key=api_key)
-    text = "I have a resume provided as text (extracted from either a PDF or DOCX file). Your task is to analyze the text and extract the following information:Name: The candidates full name.Email: The candidates email address.Skills: A list of technical and/or soft skills mentioned.Education: Details about the candidates educational background if available. Please output the extracted information in JSON format with the keys name, email, skills, and education(place_of_learning, degree, in array of objects). If any of the details are not found, leave the corresponding value empty or null" + text
+    text = "I have a resume provided as text (extracted from either a PDF or DOCX file). Your task is to analyze the text and extract the following information:Name: The candidates full name.Email: The candidates email address.Skills: A list of technical and/or soft skills mentioned.Education: Details about the candidates educational background if available. Please output the extracted information in JSON format with the keys name, email, skills, experience(take the company, developer position and duration), overrall time of work as number and education(place_of_learning, degree, in array of objects), suggestions(in one sentence), feedback. If any of the details are not found, leave the corresponding value empty or null \n" + text
+    
+    return ai_chat(text)
+    
+
+    
+
+
+def ai_chat(prompt):
+    api_key = os.getenv('AI_API_KEY')
+    model = "mistral-large-latest"
+    client = Mistral(api_key=api_key)
     chat_response = client.chat.complete(
         model= model,
         messages = [
             {
                 "role": "user",
-                "content": text,
+                "content": prompt,
             },
         ]
     )
     data = chat_response.choices[0].message.content.strip()
     print(data)
-    match = re.search(r"```json\s*(\{.*\})\s*```", data, re.DOTALL)
+    match = re.search(r"```json\s*([\s\S]*?)\s*```", data, re.DOTALL)
     if match:
         json_str = match.group(1)
         try:
@@ -58,7 +69,3 @@ def parse_resume(file_path):
             return("Error decoding JSON")
     else:
         return("No valid JSON found in the response.")
-
-    
-
-
